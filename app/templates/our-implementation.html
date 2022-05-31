@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+ 
+    <link rel="stylesheet" href="../static/css/coreStyle.css">
+    <title>Our implementation</title>
+    <style>
+        .hidden {
+            display: none;
+            padding: 25px;
+            margin-bottom: 50px;
+        }
+        .tabla{
+            width: 100%;
+            background-color: beige;
+        }
+        td{
+            
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <nav class="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- <li class="breadcrumb-item">
+                    <a href="#">Blog</a> 
+                </li> -->
+                <li class="breadcrumb-item">
+                    <a href="../on_sql">On sql</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    Our implementation
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../">Home</a>
+                </li>
+            </ol>
+        </nav>
+        <div class="cuerpo">
+            <div id="error" class="hidden">
+                <p style="color: red; font-size: 24px;">Something went wrong!!!</p>
+            </div>
+            <form action="/our_implementation1/" method="get" class="" id="form">
+                <input type="text" id="word" name="Buscador" />
+                <input type="submit" value="buscar" class="btn btn-outline-primary"/>
+            </form>
+            <div >
+                <table id="encabezado" class="tabla hidden">
+                    <tr>
+                        <th>
+                            a
+                        </th>
+                        <th>
+                            b
+                        </th>
+                    </tr>
+                </table>
+                <table id="result" class="tabla">
+                    {%for item in result%}
+                    <tr>                        
+                        {{item}}
+                    </tr>
+                    {%endfor%}
+               
+                </table>
+                
+               
+            </div>
+        </div>
+        
+    </div>
+<script>
+     const query = document.getElementById('word');
+    document.getElementById('form').onsubmit = function(e){
+        e.preventDefault();
+        
+        const Query = query.value;
+        fetch('/our_implementation/',{
+            method: 'POST',
+            body: JSON.stringify({
+                'Query' : Query
+            }),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }).then(function(response){
+            return response.json();
+        }).then(function (responseJson){
+            const a = document.getElementById('result');
+            console.log(responseJson)
+            a.innerHTML = ''
+            var td = document.createElement('td');
+            var tr = document.createElement('tr');
+            for(const i in responseJson){
+                tr.innerHTML = '';
+                for(const j in responseJson[i]){
+                    console.log(responseJson[i][j])
+                    td.innerHTML = responseJson[i][j];
+                    tr.appendChild(td.cloneNode(true))
+                }
+                document.getElementById('result').appendChild(tr.cloneNode(true));               
+            }
+
+            document.getElementById('error').className = 'hidden';
+            document.getElementById('encabezado').className = 'tabla';
+            document.getElementById('word').value = '';
+            
+        }).catch(function(){
+            document.getElementById('error').className = '';
+        });
+    };
+</script>
+</body>
+</html>
