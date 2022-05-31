@@ -6,7 +6,6 @@ Description:
 
 """
 
-
 class Hash:
     """
     Hash Table
@@ -74,17 +73,3 @@ class SinglePassInMemoryIndexing:
             self.dictionary.add(token, value)
         self.dictionary.sorted()
         self.dictionary.write_block_to_disk(self.output_filename)
-
-
-# if __name__ == "__main__":
-#     print("Secondary Memory Write")
-#     document = [
-#         ("b", 5),
-#         ("b", 6),
-#         ("b", 7),
-#         ("a", 1),
-#         ("a", 2),
-#         ("a", 3),
-#         ("a", 4),
-#     ]
-#     spimi = SinglePassInMemoryIndexing(output_filename="data/information.bin")

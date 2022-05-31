@@ -1,1 +1,1 @@
-# BD2-P2
+# Proyecto de Base de Datos 2
