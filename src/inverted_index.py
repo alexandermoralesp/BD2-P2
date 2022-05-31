@@ -24,7 +24,7 @@ class InvertedIndex:
     def procesamiento(self, texto):
         texto_tokens = nltk.word_tokenize(texto)
 
-        with(open("/content/drive/MyDrive/news/stoplist.txt")) as file:
+        with(open("data/stoplist.txt")) as file:
             stoplist = [line.lower().strip() for line in file]
         stoplist += [',', '.', '?', '¿', ":", "``", "''", "(", ")", ":", ";"]
 
