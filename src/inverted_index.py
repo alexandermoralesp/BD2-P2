@@ -144,13 +144,13 @@ class IndiceInvertido:
   def sacar_largo(self):
     self.archivo_length = "length_r"
     tf_dict = None
-    with open(self.ruta_raiz+self.archivo_tf) as f:
+    with open(self.ruta_raiz+self.archivo_tf_idf+".json") as f:
       tf_dict = json.load(f)
       f.close()
     length_array = [0] * self.n_colecciones
     for word in tf_dict:
       for key in tf_dict[word]:
-        length_array[int(key)] += (math.log10(tf_dict[word][key]))**2
+        length_array[int(key)] += (tf_dict[word][key])**2
     for i in range(self.n_colecciones):
       length_array[i] = length_array[i]**0.5
     with open(self.ruta_raiz+self.archivo_length+".json", "w") as f:
@@ -201,11 +201,6 @@ class IndiceInvertido:
         tf_idf_query_dict[i] += 1
       else:
         tf_idf_query_dict[i] = 1
-    #obtener query_length
-    q_length = 0
-    for i in tf_idf_query_dict:
-      q_length += (math.log10(tf_idf_query_dict[i]))**2
-    q_length = q_length**0.5
 
 
     #obtener tf_idf
@@ -214,6 +209,12 @@ class IndiceInvertido:
         tf_idf_query_dict[i] = math.log10(tf_idf_query_dict[i]+1)*idf_dict[i]
       else:
         del tf_idf_query_dict[i]
+    
+    #obtener query_length
+    q_length = 0
+    for i in tf_idf_query_dict:
+      q_length += (tf_idf_query_dict[i])**2
+    q_length = q_length**0.5
 
     # COSINE SCORE
     for qtx in tf_idf_query_dict:
@@ -222,7 +223,7 @@ class IndiceInvertido:
 
     for i in scores:
       if length_dict[int(i)] == 0:
-        scores[i] /= ((length_dict[int(i)]+1)*q_length)
+        scores[i] = 0
       else:
         scores[i] /= (length_dict[int(i)]*q_length)
 
