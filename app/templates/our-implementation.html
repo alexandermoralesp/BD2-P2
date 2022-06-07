@@ -15,10 +15,7 @@
             width: 100%;
             background-color: beige;
         }
-        td{
-            
-            width: 50%;
-        }
+    
     </style>
 </head>
 <body>
@@ -45,16 +42,20 @@
             </div>
             <form action="/our_implementation1/" method="get" class="" id="form">
                 <input type="text" id="word" name="Buscador" />
+                <input type="number" id="k" name="k" />
                 <input type="submit" value="buscar" class="btn btn-outline-primary"/>
             </form>
             <div >
                 <table id="encabezado" class="tabla hidden">
                     <tr>
                         <th>
-                            a
+                            Titulo
                         </th>
                         <th>
-                            b
+                            Contenido
+                        </th>
+                        <th>
+                            Similitud
                         </th>
                     </tr>
                 </table>
@@ -74,14 +75,16 @@
     </div>
 <script>
      const query = document.getElementById('word');
+     const K = document.getElementById('k');
     document.getElementById('form').onsubmit = function(e){
         e.preventDefault();
-        
+        const k = K.value;
         const Query = query.value;
         fetch('/our_implementation/',{
             method: 'POST',
             body: JSON.stringify({
-                'Query' : Query
+                'Query' : Query,
+                'K' : k
             }),
             headers: {
                 'Content-type': 'application/json'
@@ -94,6 +97,7 @@
             a.innerHTML = ''
             var td = document.createElement('td');
             var tr = document.createElement('tr');
+            td.style.cssText = "border: 1px solid black"
             for(const i in responseJson){
                 tr.innerHTML = '';
                 for(const j in responseJson[i]){

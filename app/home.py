@@ -8,6 +8,7 @@ from unicodedata import name
 import hashlib
 from unittest import result
 from urllib import response
+from src import inverted_index
 from flask import (
     Blueprint,
     Flask,
@@ -36,7 +37,8 @@ from werkzeug.utils import secure_filename
 
 
 
-
+II =inverted_index.IndiceInvertido("app/static/articles.csv", "app/static/")
+II.archivosPrevios(140000,"tf_rrrrrr1")
 # blueprints
 home = Blueprint('index', __name__, 
                 template_folder='templates', static_folder='static')                                                                        
@@ -62,13 +64,23 @@ def on_sql():
 @home.route("/our_implementation/",methods = ['GET','POST'])
 def our_implementation():
     if request.method == 'POST':
-        
         Query = request.get_json()['Query']
-        aux =[{Query:'asdasd','hddf':'poposs'},{Query:'asasfdf','hddf':'fdgh'}]
-        print(aux)
-        print(jsonify(aux))
+        K = int(request.get_json()['K'])
+        restult = II.retrieval(Query, K)
+        if not K:
+            K = 1
+        aux = []
+        for i in restult.values:
+            tmp = {}
+            tmp["Consulta"]=i[1]
+            tmp["Contenido"]=i[8]
+            tmp["Similitud"]=i[9]
+            aux.append(tmp)
+        
         return jsonify(aux)
         
     elif request.method == 'GET':
         
         return render_template("our-implementation.html")    
+
+
