@@ -10,6 +10,7 @@ from unittest import result
 from urllib import response
 from app.Consultas_Postgres import POSTGRES_QUERY
 from src import inverted_index
+import datetime
 from flask import (
     Blueprint,
     Flask,
@@ -54,7 +55,8 @@ def index():
 
 @home.route("/on_sql/",methods = ['GET','POST'])
 def on_sql():
-    if request.method == 'POST':    
+    if request.method == 'POST':  
+        start = datetime.datetime.utcnow()  
         Query = request.get_json()['Query']
         K = int(request.get_json()['K'])
         if not K:
@@ -68,13 +70,20 @@ def on_sql():
             tmp["Contenido"]=i[1][:1250]
             tmp["Similitud"]=i[2]
             aux.append(tmp)
-        return jsonify(aux)
+        end = datetime.datetime.utcnow()
+        result = end - start
+        resp = [{"descripcion": "El codigo tarda:","e" : str(int(result.seconds)) + " segundos", "f" : str(int(result.microseconds)/1000) + " milisegundos"}]
+        print(result.seconds)
+        print(result.microseconds)
+        retorno = [aux,resp]
+        return jsonify(retorno)
     elif request.method == 'GET':
         return render_template("on-sql.html")
 
 @home.route("/our_implementation/",methods = ['GET','POST'])
 def our_implementation():
     if request.method == 'POST':
+        start = datetime.datetime.utcnow()
         Query = request.get_json()['Query']
         K = int(request.get_json()['K'])
         if not K:
@@ -87,11 +96,14 @@ def our_implementation():
             tmp["Contenido"]=i[8]
             tmp["Similitud"]=i[9]
             aux.append(tmp)
-        
-        return jsonify(aux)
+        end = datetime.datetime.utcnow()
+        result = end - start
+        resp = [{"descripcion": "El codigo tarda:","e" : str(int(result.seconds)) + " segundos", "f" : str(int(result.microseconds)/1000) + " milisegundos"}]
+        print(result.seconds)
+        print(result.microseconds)
+        retorno = [aux,resp]
+        return jsonify(retorno)
         
     elif request.method == 'GET':
         
         return render_template("our-implementation.html")    
-
-
