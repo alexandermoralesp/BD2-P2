@@ -67,8 +67,11 @@
                     {%endfor%}
                
                 </table>
+                <h3 id="tiempo" class="hidden">{%for intem in tiempo%}
+                    {{item}}
+                    {%endfor%}
+                </h3>
                 
-               
             </div>
         </div>
         
@@ -90,20 +93,25 @@
                 'Content-type': 'application/json'
             }
         }).then(function(response){
-            return response.json();
+            return response.json()
         }).then(function (responseJson){
             const a = document.getElementById('result');
-            console.log(responseJson)
             a.innerHTML = ''
             var td = document.createElement('td');
             var tr = document.createElement('tr');
+            var h1sec = document.createElement('h3');
         
+                for(const j in responseJson[1][0]){
+                    h1sec.innerHTML = responseJson[1][0][j];
+                    document.getElementById('tiempo').appendChild(h1sec.cloneNode(true));    
+                }
+            
             td.style.cssText = "border: 1px solid black; width: 34%"
-            for(const i in responseJson){
+            for(const i in responseJson[0]){
                 tr.innerHTML = '';
-                for(const j in responseJson[i]){
-                    console.log(responseJson[i][j])
-                    td.innerHTML = responseJson[i][j];
+                for(const j in responseJson[0][i]){
+                    
+                    td.innerHTML = responseJson[0][i][j];
                     tr.appendChild(td.cloneNode(true))
                 }
                 document.getElementById('result').appendChild(tr.cloneNode(true));               
@@ -113,7 +121,7 @@
             document.getElementById('encabezado').className = 'tabla';
             document.getElementById('form').className = 'hidden';
             document.getElementById('word').value = '';
-            
+            document.getElementById('tiempo').className = '';
         }).catch(function(){
             document.getElementById('error').className = '';
         });
