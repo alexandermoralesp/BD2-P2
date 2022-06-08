@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
     <link rel="stylesheet" href="../static/css/coreStyle.css">
-    <title>On-sql</title>
+    <title>Our implementation</title>
     <style>
         .hidden {
             display: none;
@@ -16,76 +15,78 @@
             width: 100%;
             background-color: beige;
         }
-        td{
-            
-            width: 50%;
-        }
     </style>
 </head>
 <body>
-    <div id="header">
-    <h1>Bienvenido de vuelta!</h1>
-</div>
-
-<div>
-    <nav class="breadcrumb">
-        <ol class="breadcrumb">
-            <!-- <li class="breadcrumb-item">
-                <a href="#">Blog</a> 
-            </li> -->
-            <li class="breadcrumb-item active">
-                On sql
-            </li>
-            <li class="breadcrumb-item">
-                <a href="../our_implementation">Our implementation</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="../">Home</a>
-            </li>
-        </ol>
-    </nav>
-    <div class="cuerpo">
-        <div id="error" class="hidden">
-            <p style="color: red; font-size: 24px;">Something went wrong!!!</p>
-        </div>
-        <form action="/our_implementation1/" method="get" class="" id="form">
-            <input type="text" id="word" name="Buscador" />
-            <input type="submit" value="buscar" class="btn btn-outline-primary"/>
-        </form>
-        <div >
-            <table id="encabezado" class="tabla hidden">
-                <tr>
-                    <th>
-                        a
-                    </th>
-                    <th>
-                        b
-                    </th>
-                </tr>
-            </table>
-            <table id="result" class="tabla">
-                {%for item in result%}
-                <tr>                        
-                    {{item}}
-                </tr>
-                {%endfor%}
-           
-            </table>
+    <div>
+        <nav class="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- <li class="breadcrumb-item">
+                    <a href="#">Blog</a> 
+                </li> -->
+                <li class="breadcrumb-item active">
+                    On sql
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../our_implementation">Our implementation</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="../">Home</a>
+                </li>
+            </ol>
+        </nav>
+        <div class="cuerpo">
+            <div id="error" class="hidden">
+                <p style="color: red; font-size: 24px;">Something went wrong!!!</p>
+            </div>
+            <form action="/our_implementation1/" method="get" class="" id="form">
+                <input type="text" id="word" name="Buscador" />
+                <input type="number" id="k" name="k" />
+                <input type="submit" value="buscar" class="btn btn-outline-primary"/>
+            </form>
+            <div >
+                <table id="encabezado" class="tabla hidden">
+                    <tr>
+                        <th>
+                            Titulo
+                        </th>
+                        <th>
+                            Contenido
+                        </th>
+                        <th>
+                            Similitud
+                        </th>
+                    </tr>
+                </table>
+                <table id="result" class="tabla">
+                    {%for item in result%}
+                    <tr>                        
+                        {{item}}
+                    </tr>
+                    {%endfor%}
+               
+                </table>
+                
+               
+            </div>
             
-           
+            
+            
         </div>
+        
     </div>
-</div>
 <script>
-    const query = document.getElementById('word');
-   document.getElementById('form').onsubmit = function(e){
-       e.preventDefault();
-       
-       const Query = query.value;
+  const query = document.getElementById('word');
+     const K = document.getElementById('k');
+    document.getElementById('form').onsubmit = function(e){
+        e.preventDefault();
+        const k = K.value;
+        const Query = query.value;
        fetch('/on_sql/',{
            method: 'POST',
            body: JSON.stringify({
-               'Query' : Query
+               'Query' : Query,
+               'K': k
            }),
            headers: {
                'Content-type': 'application/json'
@@ -98,6 +99,7 @@
            a.innerHTML = ''
            var td = document.createElement('td');
            var tr = document.createElement('tr');
+           td.style.cssText = "border: 1px solid black; width: 34%"
            for(const i in responseJson){
                tr.innerHTML = '';
                for(const j in responseJson[i]){
@@ -110,6 +112,7 @@
 
            document.getElementById('error').className = 'hidden';
            document.getElementById('encabezado').className = 'tabla';
+           document.getElementById('form').className = 'hidden';
            document.getElementById('word').value = '';
            
        }).catch(function(){

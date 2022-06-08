@@ -97,7 +97,8 @@
             a.innerHTML = ''
             var td = document.createElement('td');
             var tr = document.createElement('tr');
-            td.style.cssText = "border: 1px solid black"
+        
+            td.style.cssText = "border: 1px solid black; width: 34%"
             for(const i in responseJson){
                 tr.innerHTML = '';
                 for(const j in responseJson[i]){
@@ -110,6 +111,7 @@
 
             document.getElementById('error').className = 'hidden';
             document.getElementById('encabezado').className = 'tabla';
+            document.getElementById('form').className = 'hidden';
             document.getElementById('word').value = '';
             
         }).catch(function(){
