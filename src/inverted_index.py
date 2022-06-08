@@ -175,21 +175,21 @@ class IndiceInvertido:
       json.dump(tf_dict, f)
       f.close()
 
+  def prepararRetrieval(self):
+    self.tf_idf_dict = None
+    with open(self.ruta_raiz+self.archivo_tf_idf+".json", "r") as f:
+      self.tf_idf_dict = json.load( f)
+      f.close()
+    self.idf_dict = None
+    with open(self.ruta_raiz+self.archivo_idf+".json", "r") as f:
+      self.idf_dict = json.load( f)
+      f.close()
+    self.length_dict = None
+    with open(self.ruta_raiz+self.archivo_length+".json", "r") as f:
+      self.length_dict = json.load( f)
+      f.close()
 
   def retrieval(self, query, k=1):
-    tf_idf_dict = None
-    with open(self.ruta_raiz+self.archivo_tf_idf+".json", "r") as f:
-      tf_idf_dict = json.load( f)
-      f.close()
-    idf_dict = None
-    with open(self.ruta_raiz+self.archivo_idf+".json", "r") as f:
-      idf_dict = json.load( f)
-      f.close()
-    length_dict = None
-    with open(self.ruta_raiz+self.archivo_length+".json", "r") as f:
-      length_dict = json.load( f)
-      f.close()
-    
     scores = {}
     query_terms = self.procesamiento(query)
 
@@ -205,8 +205,8 @@ class IndiceInvertido:
 
     #obtener tf_idf
     for i in tf_idf_query_dict:
-      if i in idf_dict.keys():
-        tf_idf_query_dict[i] = math.log10(tf_idf_query_dict[i]+1)*idf_dict[i]
+      if i in self.idf_dict.keys():
+        tf_idf_query_dict[i] = math.log10(tf_idf_query_dict[i]+1)*self.idf_dict[i]
       else:
         del tf_idf_query_dict[i]
     
@@ -218,14 +218,14 @@ class IndiceInvertido:
 
     # COSINE SCORE
     for qtx in tf_idf_query_dict:
-      for df_id in tf_idf_dict[qtx]:
-        scores[df_id] = tf_idf_dict[qtx][df_id]*tf_idf_query_dict[qtx]
+      for df_id in self.tf_idf_dict[qtx]:
+        scores[df_id] = self.tf_idf_dict[qtx][df_id]*tf_idf_query_dict[qtx]
 
     for i in scores:
-      if length_dict[int(i)] == 0:
+      if self.length_dict[int(i)] == 0:
         scores[i] = 0
       else:
-        scores[i] /= (length_dict[int(i)]*q_length)
+        scores[i] /= (self.length_dict[int(i)]*q_length)
 
     result = sorted(scores.items(), key= lambda tup: tup[1], reverse=True)
     indices = [int(result[i][0])  for i in range(0, k)]
@@ -234,3 +234,6 @@ class IndiceInvertido:
     res_data = self.datos.loc[indices,:]
     res_data["similitud"] = similitud
     return res_data
+
+  
+
